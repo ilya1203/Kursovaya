@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+
+{% load static %}
+
+<html>
+	<head>
+		<link rel="preconnect" href="https://fonts.gstatic.com">
+		<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap" rel="stylesheet">
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
+		<title>Hello {{name}}</title>
+	</head>
+	<body>
+		<div id='name-1' class='meet' onclick='hide()'>
+			<h1>Вы вошли как {{name}}</h1>
+			<div><a href='exit'>Выйти</a></div>
+		</div>
+		
+		<div class='conteriner'>
+		
+			<div class='anim'><img class='r-t' width=10% src={% static 'UI.png' %} /></div>
+			<form method='GET'>
+				<input class='hidden' name='login' value='{{name}}'>
+				<input class='hidden' name='password' value='{{psw}}'>
+				
+				<table>
+				<tr><td><h2>Доходы/Расходы</h2></td></tr>
+				{% for p in prod %}
+					<tr class='tr'><td class='prodName'>{{p.name}}</td> <td class='prodPrice'>{{p.price}} &#8381;</td></tr>
+				{% endfor %}
+				
+				<tr class='line-up'><td>Всего</td><td>{{total}} &#8381;</td></tr>
+				<tr>
+				<td><input name='nameProd' required type='text' placeholder='Название товара'></td>
+				<td title='Только числа'><input name='priceProd' required id='priceProd'  type='number' placeholder='Стоимость'></td>
+				<td><input type='submit' class='btn' value='Добавить'></td>
+				</tr></table>
+			</form>
+		</div>
+		
+		<div class='contacts'>
+			<h1>Контакты <input type='text' id='findContacts' placeholder='Поиск'></h1>
+			<div id='fnd'>
+				{% for c in contacts %}
+				<div  name='{{c.name}}' class='row contact'><span class='name'>{{c.name}}</span><span>
+				{% for p in c.nums %}
+						{{p.phone}};  
+				{% endfor %}
+				</span></div>
+			{% endfor %}
+			</div>
+		</div>
+	</body>
+	<style>
+		.btn{background-color: rgba(0,0,0,0); padding: 2px; border-radius: 5px; cursor: pointer; transition: .1s ease-in-out; }
+		.btn:hover{background-color: rgba(52, 235, 122,0.2); padding: 7px; border-radius: 5px; border: 2px solid black; transition: .2s ease-in-out}
+		.r-t{position: fixed; top: 0; right: 0}
+		input{font-size: 100%}
+		table{border-radius: 25px; border: 1px solid gray; padding: 25px; box-shadow: 0 0 25px rgba(0,0,0,0.5)}
+		.tr:hover{background-color: #a0a0a0; border: none; font-size: 110%; transition: .2s ease-in-out}
+		td{border: none}
+		.hidden{display: none}
+		.conteriner{margin-top: 120px; margin-left: 25%; font-size: 120%}
+		.conteriner .prodName{color: blue; font-size: 110%}
+		.conteriner .prodPrice{color: red}
+		a{text-decoration: none; color: inherit}
+		#hide-1{left: -17%; top: -75px; transition: .2s ease-in-out}
+		#name-1{left: 0; top: 0; transition: .2s ease-in-out}
+		.meet{cursor: pointer;position: fixed; top: 0; left: 0; background-color: rgba(161, 185, 209, 0.2); border-radius: 0 0 10px 0; padding: 10px}
+		
+		
+		
+		.contacts{width: 50%; margin-left: 25%; background-color: #67876d; padding: 25px; border-radius: 25px; margin-top: 50px}
+		.contact{width: 100%; margin: 0 auto}
+		.contact:hover{background-color: #67a172}
+		.contact span{width: 50%; margin-left: 25%; font-size: 130%}
+		.contact .name{color:#03fc30}
+	</style>
+	<script>
+		
+		document.getElementById('findContacts').onchange = function(event){
+			var edit = document.getElementById('fnd');
+			 for (var i = 0; i < edit.childNodes.length; i++) {
+				  alert( edit.childNodes[i] ); // Text, DIV, Text, UL, ..., SCRIPT
+				}
+			
+			
+		}
+		
+		
+		var count = 1;
+		function anim(){
+			try{
+				var h = document.getElementById('anim');
+				count = count + 1;
+				h.style.transform = 'rotate('+count+'deg)'
+				setTimeout(anim, 50);
+			}catch(e){setTimeout(anim, 50);}
+		}
+		setTimeout(anim, 50);
+		function hide(){
+			try{
+			var el = document.getElementById('name-1');
+			el.setAttribute('id', 'hide-1');
+			}
+			catch(e){
+				var el = document.getElementById('hide-1');
+				el.setAttribute('id', 'name-1');
+			}
+		}
+		
+		function exit(){
+			
+				document.getElementById("content").innerHTML = e.state.html;
+				document.title = e.state.pageTitle;
+		}
+	</script>
+</html>
