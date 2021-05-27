@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+
+
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
+		<title>Contacts {{User}}</title>
+	</head>
+	<body>
+		<div id="left-board"  class='bg-r'>
+			<h1>{{User}}</h1>
+			
+			<div class='button' id='0'><p>Контакты</p></div>
+			<div class='button'><p><a href='/index/'>Продукты</a></p></div>
+			<div class='button'><p><a href='/about/'>О приложении</a></p></div>
+			<div class='button'><p><a href='/logout/'>Выход</a></p></div>
+		</div>
+
+		<div class='window' id='c-0'>
+			<form method=GET action='/aCont/'>
+				<input name='place' type='text' placeholder='Имя' required>
+				<input name='count' type='num' placeholder='Номер' required>
+				<input type='submit' value='Добавить'>
+			</form>
+			<table>
+				<thead>
+					<tr><td>Имя</td><td>Номер</td></tr>
+				</thead>
+				<tbody>
+					{% for c in cont %}
+						<tr><td>{{c.name}}</td> <td>{{c.phone}}</td></tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+		
+
+		<div class='writer'><p>Выполнил:<br>Шаров Илья<br>НМТ-103929</p></div>
+	</body>
+	<style>
+		body{background: #c0caeb;}
+		a{color: inherit; text-decoration: none}
+		
+		.bg-r-closed{position: fixed; margin: 0; left: 0; top: 0;	 width: 10%; height: 1000px; background: #091e63; z-index: -1 transition: .2s ease-in-out; }
+		.bg-r-closed .button{display: none}
+
+		.bg-r{position: fixed; margin: 0; left: 0; top: 0;	 width: 25%; height: 1000px; background: #091e63; z-index: -1}
+		.bg-r h1{width: 100%; text-align: center; wrap: word-wrap; color: #8399fd}
+		.bg-r .button p{font-size: 120%; text-align: right; color: #8399fd; margin-right: 10px}
+		.bg-r .button p:hover{color: #c8d2fe; transition: .2s ease-in-out; cursor: pointer}
+
+		.window{position: absolute; left: 30%; width: 60%; height: 600px; background: white	; border-radius: 15px; overflow-Y: scroll}
+		.window-h{display: none; position: absolute}
+		.window table{width: 100%; padding: 10px; border: none; text-align: center}
+		
+		.window tr{width: 100%; border: none; font-size: 120%}
+		.window tr:hover{background: rgba(0,0,0,0.2); font-weight: bold}
+		.window td{width: 25%; border-right: 5px dotted rgba(0,0,0,0.2)}
+		.window table thead{background: rgba(0,25,255,0.2); border: none}
+		.window table thead td{ border: none}
+		.window form{width: 100%; padding: 10px}
+		.window input{width: 25%; padding: 0; margin: 0; border-radius: 5px; border: none; border-bottom: 1px solid black;
+		border-top: 1px solid black; font-size: 120%}
+		
+		.writer{position: fixed; bottom: 10px; left: 10px}
+	</style>
+	
+</html>
