@@ -19,9 +19,6 @@ def add_prod(request):
                     return redirect('/index/')                   
             prod = Products.objects.create(name=request.GET['name'], price=request.GET['price'], fromClient = cl)
             place = Place.objects.create(place=request.GET['place'], count=request.GET['count'], fromProduct=prod)
-                    
-                    
-                
     return redirect('/index/')
 
 
@@ -30,6 +27,7 @@ def logout(request):
         request.session['id'] = ''
         return redirect('login')
 
+    
 def login(request):
     try:
         if request.session['user'] != '':
@@ -60,6 +58,7 @@ def login(request):
     
     return render(request,'login/login.html', {'er': ''})
 
+
 def index(request):
     try:
         if request.session['user'] == '':
@@ -72,16 +71,20 @@ def index(request):
     for cl in Client.objects.all():
         if cl.login == request.session['user']:
             id_c= cl.pk
-    
     #Get products
     product = Products.objects.filter(fromClient=id_c)
     
     prod_to_exp = []
+    max_price = max_count =0
     is_placed = False
     last = ''
     last_price = ''
     for p in product:
+        if max_price < int(p.price):
+            max_price = int(p.price)
         for place in Place.objects.filter(fromProduct=p.pk):
+            if max_count < int(place.count):
+                max_count = int(place.count)
             if p.name != last and p.price != last_price:
                 last = p.name
                 last_price = p.price
@@ -90,7 +93,9 @@ def index(request):
                                 'uprice': p.price,
                                 'place':place.place,
                                 'count': place.count,
-                                'uname':p.name})
+                                'uname':p.name,
+                                'countPer':0})
+                
                 is_placed = True
             else:
                 prod_to_exp.append({'name':'',
@@ -98,7 +103,8 @@ def index(request):
                                 'uprice': p.price,
                                 'place':place.place,
                                 'count': place.count,
-                                'uname':p.name})
+                                'uname':p.name,
+                                'countPer':0})
                 is_placed = True
         
         if not is_placed:
@@ -107,8 +113,19 @@ def index(request):
                                 'place':'',
                                 'uprice': p.price,
                                 'count':'',
-                                'uname':f'NP{p.name}NP'})
-    response = render(request, 'pages/index.html', {'User': request.session['user'], 'prods':prod_to_exp})
+                                'uname':f'NP{p.name}NP',
+                                'countPer':0})
+    prods_graph = []
+
+    for p in range(len(prod_to_exp)):
+        prod_to_exp[p]['countPer'] = int(100*int(prod_to_exp[p]['count'])/max_count)
+    for p in product:
+        prods_graph.append({
+            'name':p.name,
+            'width': int((int(p.price)/max_price)*100)
+            })
+        print(int(int(p.price)/max_price)*100)
+    response = render(request, 'pages/index.html', {'User': request.session['user'], 'prods':prod_to_exp, 'prods_graph':prods_graph})
     
     return response
 
