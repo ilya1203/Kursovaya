@@ -16,9 +16,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from fullstack.views import index, login, logout, add_prod, about, contacts, add_contact
+from fullstack.views import index, login, logout, add_prod, about, contacts, add_contact, remove_contact, remove_prod
 
 urlpatterns = [
+    path('rProd/<str:name>/<str:price>/<str:place>/<str:count>', remove_prod, name='rProd'),
+    path('rCont/<str:name>/<str:phone>', remove_contact, name='rCont'),
     path('aCont/', add_contact, name='aCont'),
     path('contacts/', contacts, name='contacts'),
     path('about/', about, name='about'),

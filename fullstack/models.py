@@ -6,6 +6,8 @@ class Client(models.Model):
 
     def __str__(self):
         return self.login
+    class Meta:
+        ordering = ['login']
 
 class Products(models.Model):
     name = models.CharField(max_length=255, verbose_name='Название')

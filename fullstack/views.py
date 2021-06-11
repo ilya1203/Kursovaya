@@ -3,36 +3,24 @@ from django.http import HttpResponse
 
 from .models import Client, Products, Place, Contacts_name, Contacts_phone 
 
-def comment()   :
-    for prod in Products.objects.all():
-        if prod.name == request.GET['name']:
-            prod.price = request.GET['price']
-            prod.save()
-            for place in Place.objects.all():
-                if place.fromProduct == prod.name and place.place == request.GET['place']:
-                    place.count = request.GET['count']
-                    place.save()
-                    return redirect('index')
-            else:
-                place = Place()
-                place.fromProcuct = prod.pk
-                place.place = request.GET['place']
-                place.count = request.GET['count']
-                place.save()
-                return redirect('index')
+
 
 def add_prod(request):  
     for cl in Client.objects.all():
         if cl.login == request.session['user']:
+            for pr in Products.objects.all():
+                if pr.fromClient == cl and pr.name == request.GET['name']:
+                    for pl in Place.objects.all():
+                        if pl.place == request.GET['place']:
+                            pl.count = request.GET['count']
+                            pl.save()
+                            return redirect('/index/')
+                    place = Place.objects.create(place=request.GET['place'], count=request.GET['count'], fromProduct=pr)
+                    return redirect('/index/')                   
             prod = Products.objects.create(name=request.GET['name'], price=request.GET['price'], fromClient = cl)
-            for prod in Products.objects.filter(fromClient=cl.pk):
-                if prod.name == request.GET['name']:
-                    place = Place()
-                    place.fromProcuct = prod
-                    place.place = request.GET['place']
-                    place.count = request.GET['count']
-                    place.save()
-                    print(cl, prod, place)
+            place = Place.objects.create(place=request.GET['place'], count=request.GET['count'], fromProduct=prod)
+                    
+                    
                 
     return redirect('/index/')
 
@@ -43,8 +31,11 @@ def logout(request):
         return redirect('login')
 
 def login(request):
-    if request.session['user'] != '':
-        return redirect('index')
+    try:
+        if request.session['user'] != '':
+            return redirect('index')
+    except:
+        pass
     if request.GET:
         FLAG = True
         if request.GET != dict():
@@ -70,7 +61,10 @@ def login(request):
     return render(request,'login/login.html', {'er': ''})
 
 def index(request):
-    if request.session['user'] == '':
+    try:
+        if request.session['user'] == '':
+            return redirect('login')
+    except:
         return redirect('login')
     
     #Get user id
@@ -83,47 +77,71 @@ def index(request):
     product = Products.objects.filter(fromClient=id_c)
     
     prod_to_exp = []
-    prod_to_exp.append({'name':'Название',
-                                'price': 'Цена',
-                                'place':'Место',
-                                'count': 'Количество'})
     is_placed = False
+    last = ''
+    last_price = ''
     for p in product:
         for place in Place.objects.filter(fromProduct=p.pk):
-            if p.name != prod_to_exp[-1]['name']:
+            if p.name != last and p.price != last_price:
+                last = p.name
+                last_price = p.price
                 prod_to_exp.append({'name':p.name,
                                 'price': p.price,
+                                'uprice': p.price,
                                 'place':place.place,
-                                'count': place.count})
+                                'count': place.count,
+                                'uname':p.name})
                 is_placed = True
             else:
                 prod_to_exp.append({'name':'',
                                 'price': '',
+                                'uprice': p.price,
                                 'place':place.place,
-                                'count': place.count})
+                                'count': place.count,
+                                'uname':p.name})
                 is_placed = True
         
         if not is_placed:
-                print(p.name)
                 prod_to_exp.append({'name':p.name,
                                 'price': p.price,
                                 'place':'',
-                                'count':''})
+                                'uprice': p.price,
+                                'count':'',
+                                'uname':f'NP{p.name}NP'})
     response = render(request, 'pages/index.html', {'User': request.session['user'], 'prods':prod_to_exp})
     
     return response
 
-def contacts(request):
+def remove_prod(request, name, price, place, count):
+    FLAG = False
+    for cli in Client.objects.all():
+        if cli.login == request.session['user']:
+            for sname in Products.objects.filter(fromClient=cli.pk):
+                if sname.name == name and sname.price == price:
+                    for pl in Place.objects.filter(fromProduct=sname.pk):
+                        if pl.place == place and pl.count == count:
+                            pl.delete()
+                            FLAG = True
+                    else:
+                        if FLAG:
+                            if len(Place.objects.filter(fromProduct=sname.pk)) == 0:
+                                sname.delete()
+                            return redirect('index')
     
+    return redirect('index')
+
+def contacts(request):
     nums = Contacts_name.objects.filter(client=request.session['id'])
-    cont = [{'name':'', 'phone':''}]
-    print(nums)
+    cont = []
+    last = ''
     for n in nums:
         for num in Contacts_phone.objects.filter(name=n.pk):
-            if cont[-1]['name'] != n.name:
-                cont.append({'name': n.name, 'phone': num.phone})
+            if last != n.name:
+                cont.append({'name': n.name, 'phone': num.phone, 'uname':n.name})
+                last = n.name
             else:
-                cont.append({'name': '', 'phone': num.phone})
+                cont.append({'name': '', 'phone': num.phone,    'uname':n.name})
+                
     
     response = render(request, 'pages/contacts.html', {'User': request.session['user'], 'cont':cont})
     
@@ -131,10 +149,39 @@ def contacts(request):
 
 def add_contact(request):
     try:
-        pass
-    except:
-        pass
+        clients, phones_name, phones = Client.objects.all(), Contacts_name.objects.all(), Contacts_phone.objects.all()
+        for cli in clients:
+            if cli.login == request.session['user']:
+                for name in Contacts_name.objects.filter(client=cli.pk):
+                    if name.name == request.GET['name']:
+                        for phone in Contacts_phone.objects.filter(name=name.pk):
+                            if phone.phone == request.GET['num']:
+                                return reditrect('contacts')
+                        Contacts_phone.objects.create(name=name, phone=request.GET['num'])
+                        return redirect('contacts')
+                cont = Contacts_name.objects.create(name=request.GET['name'], client=cli)
+                Contacts_phone.objects.create(name=cont, phone=request.GET['num'])
 
+    except Exception as ex:
+        print(f'Error from add contact: {ex}')
+
+    return redirect('contacts')
+
+def remove_contact(request, name, phone):
+    try:
+        clients, phones_name, phones = Client.objects.all(), Contacts_name.objects.all(), Contacts_phone.objects.all()
+        for cli in clients:
+            if cli.login == request.session['user']:
+                for sname in Contacts_name.objects.filter(client=cli.pk):
+                    print(sname.name, name,sep='-')
+                    if sname.name == name:
+                        for iphone in Contacts_phone.objects.filter(name=sname.pk):
+                            if iphone.phone == phone:
+                                iphone.delete()
+                                return redirect('contacts')
+    except Exception as ex:
+        print(f'Err: {ex}')
+        return redirect('login')
     return redirect('contacts')
 
 def about(request):
