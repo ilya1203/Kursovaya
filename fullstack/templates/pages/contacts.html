@@ -56,7 +56,8 @@
 		
 		.bg-r-closed{position: fixed; margin: 0; left: 0; top: 0;	 width: 10%; height: 1000px; background: #091e63; z-index: -1 transition: .2s ease-in-out; }
 		.bg-r-closed .button{display: none}
-
+		
+		@media (orientation: landscape){
 		.bg-r{position: fixed; margin: 0; left: 0; top: 0;	 width: 25%; height: 1000px; background: #091e63; z-index: -1}
 		.bg-r h1{width: 100%; text-align: center; wrap: word-wrap; color: #8399fd}
 		.bg-r .button p{font-size: 120%; text-align: right; color: #8399fd; margin-right: 10px}
@@ -76,7 +77,36 @@
 		border-top: 1px solid black; font-size: 120%}
 		.window .remove{position: absolute; right: 20px; margin-top: 3px; background: none; border: none}
 		.window .remove:hover{border-radius: 10px; background: rgba(150,0,0,0.5); cursor: pointer}
+		}
+		@media (orientation: portrait){
+		.bg-r{position: satic; margin: 0; margin-left: -10px; margin-top: -20px; margin-right: -10px; width: 104%;  background: #091e63;  z-index: -1}
+		.bg-r h1{width: 100%; text-align: center; wrap: word-wrap; color: #8399fd}
+		.bg-r .button p{font-size: 120%; text-align: right; color: #8399fd; margin-right: 10px}
+		.bg-r .button p:hover{color: #c8d2fe; transition: .2s ease-in-out; cursor: pointer}
+
+		.window{position: absolute; left: 10%; width: 80%; background: white	; border-radius: 15px; overflow-Y: scroll}
+		.window-h{display: none; position: absolute}
+		.window table{width: 100%; padding: 10px; border: none; text-align: center}
+		.window table thead{background: rgba(0,25,255,0.2); border: none}
+		.window tr{width: 100%; border: none; font-size: 120%}
+		.window tr:hover{background: rgba(0,0,0,0.2); font-weight: bold}
+		.window td{width: 25%; border-right: 5px dotted rgba(0,0,0,0.2)}
+		
+		.window form{width: 100%; padding: 10px}
+		.window input{width: 75%; padding: 0; margin: 0; border-radius: 5px; border: none; border-bottom: 1px solid black;
+		border-top: 1px solid black; font-size: 120%}
+		.window .remove{margin-left: 20px; margin-top: 3px; background: none; border:none}
+		.window .remove:hover{border-radius: 10px; background: rgba(150,0,0,0.5); cursor: pointer}
+		
+		
+		.Graph-bg{position: fixed; background: rgba(0,0,0,0.8); width: 100%; height: 100%; margin: 0 auto; left: 0; top: 0}
+		.Graph{position: fixed; background: #f0f0f0; width: 75%; height: 60%; top: 20%;left: 12.5%; overflow: scroll}
+		.Graph span{margin: 20px}
+		.Graph button{position: absolute; top: 0; right:0; background: none; border: none; font-size: 150%}
+		.Graph button:hover{border-radius: 20px; background: rgba(150,0,0,0.5); cursor: pointer }
+		}
 		.writer{position: fixed; bottom: 10px; left: 10px}
+
 	</style>
 	
 	<script>
