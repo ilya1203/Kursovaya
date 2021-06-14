@@ -57,7 +57,7 @@
 		.bg-r-closed{position: fixed; margin: 0; left: 0; top: 0;	 width: 10%; height: 1000px; background: #091e63; z-index: -1 transition: .2s ease-in-out; }
 		.bg-r-closed .button{display: none}
 		
-		@media (orientation: landscape){
+		@media screen and (min-width: 768px){
 		.bg-r{position: fixed; margin: 0; left: 0; top: 0;	 width: 25%; height: 1000px; background: #091e63; z-index: -1}
 		.bg-r h1{width: 100%; text-align: center; wrap: word-wrap; color: #8399fd}
 		.bg-r .button p{font-size: 120%; text-align: right; color: #8399fd; margin-right: 10px}
@@ -78,7 +78,7 @@
 		.window .remove{position: absolute; right: 20px; margin-top: 3px; background: none; border: none}
 		.window .remove:hover{border-radius: 10px; background: rgba(150,0,0,0.5); cursor: pointer}
 		}
-		@media (orientation: portrait){
+		@media screen and (max-width: 768px){
 		.bg-r{position: satic; margin: 0; margin-left: -10px; margin-top: -20px; margin-right: -10px; width: 104%;  background: #091e63;  z-index: -1}
 		.bg-r h1{width: 100%; text-align: center; wrap: word-wrap; color: #8399fd}
 		.bg-r .button p{font-size: 120%; text-align: right; color: #8399fd; margin-right: 10px}
